@@ -1,0 +1,81 @@
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <style>
+  body {
+    background-color: #ADADAD;
+    padding: 20px;
+  }
+  p {
+    padding:10px 20px 10px 20px;
+    border-radius: 3px;
+    background-color: #501B1D;
+  }
+  .main {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ADADAD;
+
+    max-width: 500px;
+    padding:20px;
+    background-color: #2E1114;
+  }
+  a {
+    color: #ADADAD;
+    text-decoration: none;
+  }
+  button {
+    float:right;
+  }
+  #state {
+    display:inline-block;
+    clear:both;
+    float:left;
+  }
+  </style>
+  <script type='text/javascript'>
+
+    function bool2State(bool){
+      if(typeof(bool) !== "boolean"){
+        return 'UNKNOWN';
+      }
+      return bool ? 'ON' : 'OFF';
+    }
+    function actionResponse(){
+        bool = JSON.parse(this.responseText);
+        document.getElementById('state_val').innerHTML = bool2State(bool);
+        last = this;
+        console.log(this.responseText);
+    }
+    function query(endpoint){
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener("load", actionResponse);
+        oReq.open("GET", '/'+endpoint+'/');
+        oReq.send();
+    }
+    function on(){
+        query('on');
+    }
+    function off(){
+        query('off');
+    }
+    function toggle(){
+        query('toggle');
+    }
+    function state(){
+        query('state');
+    }
+
+    </script>
+</head>
+<body>
+    <div class='main'>
+      <p>State: <span id='state_val'>UNKNOWN</span></p>
+      <p><a href="{{url_for('on')}}">{{url_for('on', _external=True)}}</a><button type="button" class="btn btn-light" onClick="on();">On</button></p>
+      <p><a href="{{url_for('off')}}">{{url_for('off', _external=True)}}</a><button type="button" class="btn btn-dark" onClick="off();">Off</button> </p>
+      <p><a href="{{url_for('toggle')}}">{{url_for('toggle', _external=True)}}</a><button type="button" class="btn btn-light" onClick="toggle();">Toggle</button></p>
+      <p><a href="{{url_for('state')}}">{{url_for('state', _external=True)}}</a><button type="button" class="btn btn-dark" onClick="state();">State</button></p>
+    </div>
+</body>
+</html>
